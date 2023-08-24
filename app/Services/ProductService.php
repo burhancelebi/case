@@ -2,15 +2,27 @@
 
 namespace App\Services;
 
+use App\Http\Resources\Products\ProductResource;
 use App\Repositories\ProductRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductService extends BaseService
 {
-    /** @var ProductRepository  */
-    private ProductRepository $productRepository;
-
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(private readonly ProductRepository $productRepository)
     {
-        $this->productRepository = $productRepository;
+    }
+
+    public function getProducts(): AnonymousResourceCollection
+    {
+        return ProductResource::collection($this->productRepository->getProducts());
+    }
+
+    /**
+     * @param int $id
+     * @return ProductResource
+     */
+    public function getProductById(int $id): ProductResource
+    {
+        return ProductResource::make($this->productRepository->getProductById($id));
     }
 }

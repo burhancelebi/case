@@ -3,6 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductRepository extends BaseRepository
 {
@@ -95,5 +99,19 @@ class ProductRepository extends BaseRepository
     public function setStock(int $stock): void
     {
         $this->stock = $stock;
+    }
+
+    public function getProducts(): LengthAwarePaginator
+    {
+        return $this->product->newQuery()->paginate(request()->get('per_page'));
+    }
+
+    /**
+     * @param int $id
+     * @return Model|Collection|Builder|array|null
+     */
+    public function getProductById(int $id): Model|Collection|Builder|array|null
+    {
+        return $this->product->newQuery()->findOrFail($id);
     }
 }

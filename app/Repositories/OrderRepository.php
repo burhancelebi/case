@@ -3,6 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderRepository extends BaseRepository
 {
@@ -54,5 +58,27 @@ class OrderRepository extends BaseRepository
     public function setTotal(float $total): void
     {
         $this->total = $total;
+    }
+
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function getOrders(): LengthAwarePaginator
+    {
+        return $this->order->newQuery()->paginate(request()->get('per_page'));
+    }
+
+    /**
+     * @param int $id
+     * @return Model|Collection|Builder|array|null
+     */
+    public function getOrderById(int $id): Model|Collection|Builder|array|null
+    {
+        return $this->order->newQuery()->findOrFail($id);
+    }
+
+    public function destroy(int $id)
+    {
+        return $this->order->newQuery()->where('id', $id)->delete();
     }
 }

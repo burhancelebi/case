@@ -6,6 +6,7 @@ use App\Models\User;
 use Faker\Generator;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
                 'name' => $user->name,
                 'since' => $user->since,
                 'revenue' => $user->revenue,
+                'password' => Hash::make(1234),
             ]);
         }
     }

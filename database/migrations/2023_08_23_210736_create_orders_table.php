@@ -17,6 +17,7 @@ return new class extends Migration
             $table->bigInteger('customer_id')->unsigned();
             $table->decimal('total', 10);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('customer_id')->on('users')
                 ->references('id')->cascadeOnUpdate();
