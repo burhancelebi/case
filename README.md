@@ -3,7 +3,7 @@
 Veritabanını kurduğumuzda aşağıdaki komutları sırasıyla çalıştırıyoruz.
     
     docker-compose up -d
-    docker-compose exec -it case sh
+    docker exec -it case sh
     php artisan migrate --seed
 
 Bu üç komutu çalıştırdıktan sonra proje dosyalarının
