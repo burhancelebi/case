@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('customer_id')->unsigned();
-            $table->decimal('total', 10);
+            $table->decimal('total', 10)->nullable();
             $table->timestamps();
             $table->softDeletes();
 

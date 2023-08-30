@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Resources\Orders\OrderResource;
-use App\Services\OrderService;
+use App\Services\Orders\OrderService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -20,15 +21,15 @@ class OrderController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        return $this->orderService->getOrders();
+        return $this->orderService->getOrderWithItems();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateOrderRequest $request)
+    public function store(CreateOrderRequest $request): OrderResource
     {
-        dd(123);
+        return $this->orderService->store($request);
     }
 
     /**
@@ -49,9 +50,12 @@ class OrderController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        $this->orderService->destroy($id);
+        return $this->orderService->destroy($id);
     }
 }

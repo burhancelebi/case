@@ -2,14 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ProductStockControlRule;
-use App\Services\ProductService;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateOrderRequest extends FormRequest
+class CampaignRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +22,12 @@ class CreateOrderRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
-    public function rules(ProductService $productService): array
+    public function rules(): array
     {
         return [
-            'customer_id' => 'bail|required',
-            'products.*.quantity' => 'required|integer|min:1|max:100|bail',
-            'products.*.id' => ['required', new ProductStockControlRule($productService)],
+            'key' => 'required|max:200|unique:campaigns',
+            'make_discount_sql' => ['required'],
+            'check_campaign_sql' => ['required'],
         ];
     }
 

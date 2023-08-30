@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
+            $table->string('key')->unique();
+            $table->text('make_discount_sql');
+            $table->text('check_campaign_sql');
             $table->timestamps();
         });
     }

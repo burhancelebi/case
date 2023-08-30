@@ -31,11 +31,22 @@ class ProductStockControlRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $quantity = $this->searchForId($value, request()->get('products'));
+
         $product = $this->productService->getProductById($value);
 
-        if ($product->stock < request()->get('quantity'))
+        if ($product->stock < $quantity)
         {
             $fail('There are only ' . $product->stock .' of this product in stock');
         }
+    }
+
+    private function searchForId($id, $array) {
+        foreach ($array as $val) {
+            if ($val['id'] === $id) {
+                return $val['quantity'];
+            }
+        }
+        return null;
     }
 }

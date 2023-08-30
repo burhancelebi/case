@@ -25,7 +25,7 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'customer_id' => $this->customer_id,
-            'items' => OrderItemResource::make($this->items),
+            'items' => OrderItemResource::collection($this->items),
             'total' => $this->total
         ];
     }
