@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "bb1bb55b-8188-4d97-b310-eb4a0a7bbfbb",
+		"name": "Case",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21057803"
+	},
+	"item": [
+		{
+			"name": "Ordes",
+			"item": [
+				{
+					"name": "Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/orders?per_page=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": 1,\n    \"products\": [\n        {\n            \"id\": 1,\n            \"quantity\": 10\n        },\n        {\n            \"id\": 2,\n            \"quantity\": 2\n        },\n        {\n            \"id\": 3,\n            \"quantity\": 1\n        },\n        {\n            \"id\": 4,\n            \"quantity\": 3\n        },\n        {\n            \"id\": 5,\n            \"quantity\": 4\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/orders/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"orders",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/products?per_page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"products"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Campaigns",
+			"item": [
+				{
+					"name": "Get Campaigns",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/campaigns",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store Campaign",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "check_campaign_sql",
+									"value": "select o.id, o.total, oi.total, o.customer_id, oi.id,\n       p.category, (@position := ifnull(@position, 0) + 1)\nfrom orders o\n         left join order_items oi on o.id = oi.order_id\n         left join products p on p.id = oi.product_id\nwhere p.category = 1 and o.id = ?\ngroup by oi.id, o.id, oi.total having @position >= 2 order by oi.total asc limit 1;",
+									"type": "text"
+								},
+								{
+									"key": "key",
+									"value": "DISCOUNT_BY_20_PERCENT",
+									"type": "text"
+								},
+								{
+									"key": "make_discount_sql",
+									"value": "UPDATE orders o,\n    (\n        SELECT (@total := ifnull(@total, 0) + oi.total * 20 / 100) as discounted_product\n        FROM order_items oi\n        where oi.order_id = 1\n        order by oi.total asc limit 1\n    ) as item\nSET o.total = o.total - item.discounted_product\nWHERE o.id = ?;",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/campaigns",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"campaigns"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "BUY_5_GET_1",
+									"disabled": true
+								},
+								{
+									"key": "make_discount_sql",
+									"value": "UPDATE orders o LEFT JOIN order_items oi on o.id = oi.order_id SET o.total = o.total - oi.total\nWHERE o.id = ?;",
+									"disabled": true
+								},
+								{
+									"key": "check_campaign_sql",
+									"value": "\"select o.id, o.total, o.customer_id, oi.id,\n       p.category, (@position := ifnull(@position, 0) + 1)\nfrom orders o\n         left join order_items oi on o.id = oi.order_id\n         left join products p on p.id = oi.product_id\nwhere p.category = 2 and o.id = ?\ngroup by oi.id, o.id having @position >= 6 limit 1;\"",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Apply Campaign",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/api/campaigns/apply/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"campaigns",
+								"apply",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
